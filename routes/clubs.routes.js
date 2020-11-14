@@ -1,7 +1,40 @@
 const router = require('express').Router();
 const Club = require('../models/club.model');
+const Announcement = require('../models/announcement.model');
 
 // GENERAL API ROUTES
+
+router.get('/:id/students', async (req, res) => {
+    const club = await Club.findById(req.params.id);
+    const populatedClub = await club.execPopulate('students');
+    res.json(populatedClub.students);
+});
+
+router.post('/:id/announcements', async (req, res) => {
+    const newAnnouncement = await Announcement.create({
+        ...req.body,
+        club: req.params.id,
+    });
+
+    await newAnnouncement.save();
+    res.json(newAnnouncement);
+});
+
+router.get('/:id/announcements', async (req, res) => {
+    const announcements = await Announcement.find({
+        club: req.params.id,
+    });
+    const populatedAnnouncements = [];
+
+    for (let i = 0; i < announcements.length; i++) {
+        const populatedAnnouncement = await announcements[
+            i
+        ].execPopulate('user');
+        populatedAnnouncements.push(populatedAnnouncement);
+    }
+
+    res.json(populatedAnnouncements);
+});
 
 // Get all clubs
 router.get('/', async (req, res) => {

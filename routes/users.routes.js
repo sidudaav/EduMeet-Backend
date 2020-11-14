@@ -1,6 +1,13 @@
 const router = require('express').Router();
 const User = require('../models/user.model');
 
+router.get('/:id/clubs', async (req, res) => {
+    const user = await User.findById(req.params.id);
+    const populatedUser = await user.execPopulate('clubs');
+
+    res.json(populatedUser.clubs);
+});
+
 // GENERAL API ROUTES
 
 // Get all users

@@ -19,9 +19,6 @@ const clubSchema = mongoose.Schema({
     description: {
         type: String,
     },
-    registrationLink: {
-        type: String,
-    },
     websiteLink: {
         type: String,
     },
